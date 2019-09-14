@@ -9,6 +9,7 @@ body {
   font-size: 16px;
   background-color: #c8f2ff;
   transition: all 0.7s ease;
+  height: 3000px;
 }
 
 .flex {
@@ -27,3 +28,20 @@ body {
     padding: 1em;
 }
 
+.profile {
+  height: 18%;
+  margin: 10%;
+  background-color: #FFF;
+  border-radius: 5%;
+}
+
+footer {
+  display: flex;
+  bottom: 0;
+  position: fixed;
+  justify-content: space-around;
+  width: 100%;
+  padding: 1em;
+  background-color: #75b0c2;
+  border-radius: 5% 5% 0 0;
+}
