@@ -9,9 +9,6 @@ body {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
   background-color: #c8f2ff;
-  -webkit-transition: all 0.7s ease;
-  transition: all 0.7s ease;
-  height: 3000px;
 }
 
 .flex {

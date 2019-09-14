@@ -8,8 +8,6 @@ body {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
   background-color: #c8f2ff;
-  transition: all 0.7s ease;
-  height: 3000px;
 }
 
 .flex {
@@ -34,7 +32,6 @@ body {
   margin: 10%;
   background-color: #fff;
   border-radius: 5%;
-  // grid-template-columns: [col1] 50% [col2] 50%;
   grid-template-rows: 30% 30% 30% 5%;
   align-self: center;
   .personal {
