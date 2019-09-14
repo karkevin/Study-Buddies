@@ -1,0 +1,26 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  background-color: #c8f2ff;
+  transition: all 0.7s ease;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.center {
+    text-align: center;
+}
+
+.padding-top {
+    padding-top: 1em;
+}
+
