@@ -1,85 +1,72 @@
-document.body.onload = addElement(printDivs);
+document.body.onload = addProfiles(initializeProfiles);
 var profiles;
 var currentProfileIndex = 0;
 
-function addElement(callback) {
-    var lst = [1, 2, 3, 4]
+function addProfiles(callback) {
+    var lst = [
+        {
+            "picture": "Resources/Sherry.jpeg",
+            "name": "Sherry Sanders",
+            "interests": ["Painting", "Ballet", "Environmental Sciences", "Design", "Ski"],
+            "courses": ["ECO101", "ECO102", "CSC108", "ANT199"]
+        }, 
+        {
+            "picture": "Resources/Bob.jpg",
+            "name": "Bob Ding",
+            "interests": ["Basketball", "Climbing", "Sleeping", "Coding", "Hiking"], 
+            "courses": ["CSC207", "CSC209", "CSC236", "HPS101"]
+        }
+    ]
     var currentDiv = document.querySelector("footer");
 
     for (var i = lst.length - 1; i >= 0; i--) {
-
+        var object = lst[i];
         var newDiv = document.createElement("div");
+        var imageAndName = document.createElement("div");
+
+        var image = document.createElement("img");
+        image.src = object.picture;
+        imageAndName.appendChild(image);
+        imageAndName.appendChild(document.createTextNode(object.name));
+        imageAndName.classList.add("personal");
+        newDiv.appendChild(imageAndName);
+
+        var courses = document.createElement("div");
+        var courseText = document.createElement("h3");
+        courseText.innerHTML = "Courses";
+        courses.appendChild(courseText);
+        var list = document.createElement('ul');
+        for (var i = 0; i < object.courses.length; i++) {
+            var item = document.createElement('li');
+            item.appendChild(document.createTextNode(object.courses[i]));
+            list.appendChild(item);
+        }
+        courses.appendChild(list);
+        courses.classList.add("courses");
+        newDiv.appendChild(courses);
+
+        var interests = document.createElement("div");
+        var interestsText = document.createElement("h3");
+        interestsText.innerHTML = "Intersts";
+        interests.appendChild(interestsText);
+        var list = document.createElement('ul');
+        for (var i = 0; i < object.interests.length; i++) {
+            var item = document.createElement('li');
+            item.appendChild(document.createTextNode(object.interests[i]));
+            list.appendChild(item);
+        }
+        interests.appendChild(list);
+        interests.classList.add("interests");
+        newDiv.appendChild(interests);
+
         newDiv.classList.add("profile");
-
-        var newContent = document.createTextNode("Hi there and greetings!" + i);
-
-        newDiv.appendChild(newContent);
-
         document.body.insertBefore(newDiv, currentDiv);
         currentDiv = newDiv;
     }
     callback();
 }
 
-var lastScrollTop = 0;
-// element should be replaced with the actual target element on which you have applied scroll, use window in case of no target element.
-window.addEventListener("scroll", function () { // or window.addEventListener("scroll"....
-    var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-
-
-    if (st > lastScrollTop) {
-        scrollToNearestProfile(false, 50);
-        this.console.log("down");
-
-    } else {
-        scrollToNearestProfile(true, 50);
-        this.console.log("up");
-    }
-    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-}, false);
-
-/* Smoothly scrolls to different sections of the page. */
-const scrollToNearestProfile = function (bool, duration) {
-    var target;
-    if (bool) {
-        var ind = Math.max(0, currentProfileIndex - 1);
-        target = profiles[ind];
-        console.log(target);
-        currentProfileIndex = ind;
-    }
-    else {
-        var ind = Math.min(profiles.length - 1, currentProfileIndex + 1);
-        target = profiles[ind];
-        currentProfileIndex = ind;
-    }
-
-    var position = target.getBoundingClientRect().top;
-    var startPosition = window.pageYOffset;
-    var startTime = null;
-    function animate(currentTime) {
-        if (startTime === null) {
-            startTime = currentTime;
-        }
-        var timeElapsed = currentTime - startTime;
-        var run = ease(timeElapsed, startPosition, position, duration);
-
-        window.scrollTo(0, run);
-
-        if (timeElapsed < duration) {
-            requestAnimationFrame(animate);
-        }
-    };
-    function ease(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t * t + b;
-        t -= 2;
-        return c / 2 * (t * t * t + 2) + b;
-    };
-    
-    requestAnimationFrame(animate);
-}
-
-function printDivs() {
+function initializeProfiles() {
     profiles = document.querySelectorAll(".profile");
     console.log(profiles);
 }

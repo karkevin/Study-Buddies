@@ -18,21 +18,49 @@ body {
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .padding-top {
-    padding-top: 1em;
+  padding-top: 1em;
 }
 .padding {
-    padding: 1em;
+  padding: 1em;
 }
 
 .profile {
+  display: grid;
   height: 18%;
   margin: 10%;
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 5%;
+  // grid-template-columns: [col1] 50% [col2] 50%;
+  grid-template-rows: 30% 30% 30% 5%;
+  align-self: center;
+  .personal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    img {
+      margin: 0 100%;
+      padding: 1%;
+      height: 100px;
+    }
+  }
+  ul li {
+    margin-left: 1em;
+  }
+}
+
+.box {
+  grid-template-columns: [col1] 50% [col2] 50%;
+  grid-template-rows: [row1] 45% [row2] 55%;
+  .about-top {
+    grid-column: span 2;
+  }
+  p {
+    line-height: 1.5em;
+  }
 }
 
 footer {
