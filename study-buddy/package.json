@@ -26,7 +26,7 @@
     "prettier": "^1.17.1"
   },
   "scripts": {
-    "start": "bash bin/dev.sh",
+    "start": "node src/www/App.js",
     "build": "react-scripts build",
     "deploy": "deploy-node-app",
     "test": "react-scripts test",
@@ -44,16 +44,16 @@
   ],
   "deploy-node-app": {
     "prod": {
-      "port": 4000,
+      "port": 3000,
       "protocol": "http",
       "entrypoint": "src/api/index.js"
     },
     "dev": {
-      "port": 4000,
+      "port": 3000,
       "protocol": "http",
       "entrypoint": "src/api/index.js",
       "registry": ""
     }
   },
-  "proxy": "http://localhost:4000"
+  "proxy": "http://localhost:3000"
 }

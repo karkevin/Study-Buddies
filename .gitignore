@@ -1,20 +1,23 @@
-study-buddy/node_modules
-study-buddy/.pnp
-study-buddy.pnp.js
+node_modules
+/study-buddy
+.pnp
+.pnp.js
 
 # testing
-study-buddy/coverage
+coverage
 
 # production
-study-buddy/build
+build
 
 # misc
-study-buddy/.DS_Store
-study-buddy/.env
-study-buddy/*.local
-study-buddy/*.log
-study-buddy/*.log.gz
+.DS_Store
+.env
+*.local
+*.log
+*.log.gz
 
 # used by deploy-node-app
-study-buddy/tmp/
-study-buddy/secrets/
+tmp/
+secrets/
+study-buddy/package.json
+study-buddy/src/api/index.js
