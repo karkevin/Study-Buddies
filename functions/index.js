@@ -92,7 +92,7 @@ app.put("/editProfile", (req, res) => {
 
 app.get("/match", (req, res) => {});
 
-app.get("/addUser", (req, res) => {
+app.post("/addUser", (req, res) => {
   // does not add profile if userid exists already
   const users = db.collection("users");
   users
