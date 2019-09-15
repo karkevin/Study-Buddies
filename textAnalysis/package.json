@@ -1,0 +1,20 @@
+{
+  "name": "name",
+  "version": "1.0.0",
+  "description": "text analysis",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-cognitiveservices-language": "^1.0.0-preview",
+    "azure-cognitiveservices-textanalytics": "^3.0.0",
+    "ms-rest": "^2.3.3",
+    "ms-rest-azure": "^2.5.5",
+    "npm": "^5.8.0",
+    "utf8": "^3.0.0"
+  },
+  "devDependencies": {}
+}
