@@ -6,8 +6,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const https = require("https");
+var URL = require("url").URL;
 
 let path = "/text/analytics/v2.1/keyPhrases";
+const endpoint = "https://karkackev.cognitiveservices.azure.com/";
+let userKeyPhrases = [];
 
 let response_handler = function(response) {
   let body = "";
@@ -16,9 +19,15 @@ let response_handler = function(response) {
   });
   response.on("end", function() {
     let body_ = JSON.parse(body);
-    let body__ = JSON.stringify(body_, null, "  ");
-    console.log(body__);
-    console.log(body_);
+    userKeyPhrases = body_.documents[0].keyPhrases;
+    var matched = keywords(userKeyPhrases);
+    db.collection("users")
+      .doc(userId)
+      .collection("matches")
+      .doc("profiles")
+      .set({
+        users: matched
+      });
   });
   response.on("error", function(e) {
     console.log("Error: " + e.message);
@@ -43,7 +52,6 @@ let get_key_phrases = function(documents) {
 };
 
 const subscription_key = "bb76c73bafe3405484cd01c6af0ee732";
-const endpoint = "https://karkackev.cognitiveservices.azure.com/";
 
 // authoirze with firebase
 admin.initializeApp({
@@ -185,6 +193,7 @@ app.post("/match", (req, res) => {
    */
 
   getMatchedUsers(JSON.stringify(userProfile), profile.data().userid);
+
   matchedUsers = profile
     .collection("matches")
     .doc("profiles")
@@ -297,7 +306,6 @@ function keywords(phrases) {
 }
 
 function getMatchedUsers(userText, userId) {
-  var userKeyPhrases = [];
   var inputDocuments = {
     documents: [
       {
@@ -308,28 +316,6 @@ function getMatchedUsers(userText, userId) {
     ]
   };
   get_key_phrases(inputDocuments);
-  var condition = client.keyPhrases({
-    multiLanguageBatchInput: inputDocuments
-  });
-
-  condition
-    .then(result => {
-      userKeyPhrases = result.documents[0].keyPhrases;
-      var matched = keywords(userKeyPhrases);
-      console.log(matched);
-
-      // TODO upload to database.
-      db.collection("users")
-        .doc(userId)
-        .collection("matches")
-        .doc("profiles")
-        .set({
-          users: matched
-        });
-    })
-    .catch(err => {
-      throw err;
-    });
 }
 
 exports.api = functions.https.onRequest(app);
