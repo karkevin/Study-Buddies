@@ -67,8 +67,9 @@ app.post("/login", (req, res) => {
 
 app.put("/editProfile", (req, res) => {
   const profile = db.collection("users").doc(req.body.userid);
-  profile.get.then(user => {
-    user.array.forEach(element => {
+  profile
+    .get()
+    .then(user => {
       user.update({
         bio: req.body.bio,
         courses: req.body.courses,
@@ -76,8 +77,50 @@ app.put("/editProfile", (req, res) => {
         interests: req.body.interests,
         picture: req.body.picture
       });
+    })
+    .then(result => {
+      res.send({
+        updated: true
+      });
+    })
+    .catch(result => {
+      res.send({
+        updated: false
+      });
     });
-  });
+});
+
+app.get("/match", (req, res) => {});
+
+app.get("/addUser", (req, res) => {
+  // does not add profile if userid exists already
+  const users = db.collection("users");
+  users
+    .doc(req.body.userid)
+    .get()
+    .then(user => {
+      if (user.exists) {
+        res.send({
+          idTaken: true,
+          userCreated: false
+        });
+      } else {
+        users
+          .add({
+            userid: req.body.userid,
+            name: req.body.name,
+            password: req.body.password,
+            bio: req.body.bio,
+            interests: req.body.interests,
+            courses: req.body.courses,
+            email: req.body.email,
+            picture: req.body.picture
+          })
+          .then(result => {
+            res.send("result");
+          });
+      }
+    });
 });
 
 // });
