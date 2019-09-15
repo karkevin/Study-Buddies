@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/karkevin/Study-Buddies/issues"
   },
-  "homepage": "https://github.com/karkevin/Study-Buddies#readme"
+  "homepage": "https://github.com/karkevin/Study-Buddies#readme",
+  "dependencies": {
+    "@azure/cognitiveservices-textanalytics": "^4.0.0",
+    "@azure/ms-rest-js": "^2.0.4"
+  }
 }

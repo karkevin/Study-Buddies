@@ -13,7 +13,13 @@
   },
   "dependencies": {
     "firebase-admin": "^8.0.0",
-    "firebase-functions": "^3.1.0"
+    "firebase-functions": "^3.1.0",
+    "azure-cognitiveservices-language": "^1.0.0-preview",
+    "azure-cognitiveservices-textanalytics": "^3.0.0",
+    "ms-rest": "^2.3.3",
+    "ms-rest-azure": "^2.5.5",
+    "npm": "^5.8.0",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.1.6"

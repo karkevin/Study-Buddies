@@ -20,7 +20,9 @@ const subscription_key = "bb76c73bafe3405484cd01c6af0ee732";
 //     throw new Error('please set/export the following environment variable: ' + endpoint_var);
 // }
 const endpoint = "https://karkackev.cognitiveservices.azure.com/";
-const creds = new CognitiveServicesCredentials.ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': subscription_key } });
+const creds = new CognitiveServicesCredentials.ApiKeyCredentials({
+  inHeader: { "Ocp-Apim-Subscription-Key": subscription_key }
+});
 const client = new TextAnalyticsAPIClient.TextAnalyticsClient(creds, endpoint);
 
 // authoirze with firebase
@@ -40,21 +42,6 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cors());
-
-app.get("/test", (req, res) => {
-  console.log("testing api");
-  db.collection("users").add({
-    "full name": "Bill",
-    age: 20
-  });
-  res.send({
-    test: 1
-  });
-});
-
-app.get("/test2", (req, res) => {
-  res.send("hello");
-});
 
 // endpoint handling log in requests
 app.post("/login", (req, res) => {
@@ -94,7 +81,9 @@ app.post("/profileInfo", (req, res) => {
         courses: user.data().courses,
         bio: user.data().bio,
         interests: user.data().interests,
-        picture: user.data().picture
+        picture: user.data().picture,
+        name: user.data().name,
+        email: user.data().email
       });
     }
   });
@@ -133,99 +122,71 @@ app.put("/editProfile", (req, res) => {
   });
 });
 
-app.get("/match", (req, res) => {
+app.post("/match", (req, res) => {
   // Mock data
-  var userText = {
-    bio: "Hi guys! My name is Dave, and I like to hack!! My favorite course is CS246, and I love traveling. Please message me if you want to study :)",
-    courses: ["CS246", "ECO101", "DA223"],
-    email: "davey@hack.com",
-    interests: ["Coding", "Hacking", "Bubble Tea", "Sleeping", "Basketball"],
-    picture: "Resources/Dave"
-  }
-  function deleteFields() {
-    delete userText.courses;
-    delete userText.email;
-    delete userText.picture;
-  } deleteFields();
+  // var userText = {
+  //   bio:
+  //     "Hi guys! My name is Dave, and I like to hack!! My favorite course is CS246, and I love traveling. Please message me if you want to study :)",
+  //   courses: ["CS246", "ECO101", "DA223"],
+  //   email: "davey@hack.com",
+  //   interests: ["Coding", "Hacking", "Bubble Tea", "Sleeping", "Basketball"],
+  //   picture: "Resources/Dave"
+  // };
 
-  var testData = {
-    "Sleeping": ["Alice", "Bob", "Nicole"],
-    "Debate": ["Joe", "Bob", "Cooper"],
-    "Basketball": ["Alice", "Bob", "Joe"],
-    "Painting": ["Alice", "Nicole"],
-    "Volunteer": ["Bob", "Joe", "Nicole"],
-    "Coding": ["Bob", "Zaid", "Cooper"]
+  const user = req.body.userid;
+  const profile = db.collection("users").doc(user);
+  const keywords = profile.data().keyWords;
+
+  let keywordDict = {};
+
+  for (let word of keywords) {
+    testData[word] = db
+      .collection("keywords")
+      .doc(word)
+      .data().users;
   }
 
+  let userProfile = {
+    bio: profile.data().bio,
+    interests: profile.data().interests
+  };
+
+  // var testData = {
+  //   Sleeping: ["Alice", "Bob", "Nicole"],
+  //   Debate: ["Joe", "Bob", "Cooper"],
+  //   Basketball: ["Alice", "Bob", "Joe"],
+  //   Painting: ["Alice", "Nicole"],
+  //   Volunteer: ["Bob", "Joe", "Nicole"],
+  //   Coding: ["Bob", "Zaid", "Cooper"]
+  // };
 
   /**
-  * Gets the matched users from database based on keywords. 
-  */
-  function getMatchedUsers(userText) {
-    var userKeyPhrases = [];
-    var inputDocuments = {
-      documents: [
-        {
-          language: "en",
-          id: "1",
-          text: userText
-        },
-      ]
-    }
-    var condition = client.keyPhrases({
-      multiLanguageBatchInput: inputDocuments
-    });
+   * Gets the matched users from database based on keywords.
+   */
 
-    condition
-      .then(result => {
-        userKeyPhrases = result.documents[0].keyPhrases;
-        var matched = keywords(userKeyPhrases);
-        console.log(matched);
-
-        // TODO upload to database.
-      })
-      .catch(err => {
-        throw err;
-      });
+  getMatchedUsers(JSON.stringify(userProfile), profile.data().userid);
+  matchedUsers = profile
+    .collection("matches")
+    .doc("profiles")
+    .data().users;
+  matchArray = [];
+  for (let user of matchedUsers) {
+    profileData = db
+      .collection("users")
+      .doc(user)
+      .data();
+    userProfile = {
+      name: profileData.name,
+      bio: profileData.bio,
+      courses: profileData.courses,
+      interests: profileData.interests,
+      picture: profileData.picture
+    };
+    matchArray.push(userProfile);
   }
-
-  function keywords(phrases) {
-    var matchedUsers = {};
-    var matchedList = [];
-    for (var obj of phrases) {
-      if (testData.hasOwnProperty(obj)) {
-        for (var user of testData[obj]) {
-          if (matchedUsers.hasOwnProperty(user)) {
-            matchedUsers[user] += 1;
-          }
-          else {
-            matchedUsers[user] = 1;
-          }
-        }
-      }
-    }
-
-    for (var user in matchedUsers) {
-      if (matchedList.length == 0) {
-        matchedList.push(user);
-      }
-      else {
-        var i;
-        for (i = 0; i < matchedList.length; i++) {
-          if (matchedUsers[user] > matchedUsers[matchedList[i]]) {
-            matchedList.splice(i, 0, user);
-            break;
-          }
-        }
-        if (i == matchedList.length) {
-          matchedList.push(user);
-        }
-      }
-    }
-    return matchedList;
-  }
-
-  getMatchedUsers(JSON.stringify(userText));
+  res.send({
+    matches: matchArray
+  });
 });
 
 app.post("/addUser", (req, res) => {
@@ -265,8 +226,9 @@ app.post("/addUser", (req, res) => {
         users
           .doc(req.body.userid)
           .collection("matches")
-          .add({
-            profile: db.doc("users/" + req.body.userid)
+          .doc("profiles")
+          .set({
+            users: [db.doc("users/" + req.body.userid)]
           })
           .then(result => {
             res.send(result => {
@@ -280,12 +242,73 @@ app.post("/addUser", (req, res) => {
     });
 });
 
-// });
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+function keywords(phrases) {
+  var matchedUsers = {};
+  var matchedList = [];
+  for (var obj of phrases) {
+    if (testData.hasOwnProperty(obj)) {
+      for (var user of testData[obj]) {
+        if (matchedUsers.hasOwnProperty(user)) {
+          matchedUsers[user] += 1;
+        } else {
+          matchedUsers[user] = 1;
+        }
+      }
+    }
+  }
+
+  for (var user in matchedUsers) {
+    if (matchedList.length == 0) {
+      matchedList.push(user);
+    } else {
+      var i;
+      for (i = 0; i < matchedList.length; i++) {
+        if (matchedUsers[user] > matchedUsers[matchedList[i]]) {
+          matchedList.splice(i, 0, user);
+          break;
+        }
+      }
+      if (i == matchedList.length) {
+        matchedList.push(user);
+      }
+    }
+  }
+  return matchedList;
+}
+
+function getMatchedUsers(userText, userId) {
+  var userKeyPhrases = [];
+  var inputDocuments = {
+    documents: [
+      {
+        language: "en",
+        id: "1",
+        text: userText
+      }
+    ]
+  };
+  var condition = client.keyPhrases({
+    multiLanguageBatchInput: inputDocuments
+  });
+
+  condition
+    .then(result => {
+      userKeyPhrases = result.documents[0].keyPhrases;
+      var matched = keywords(userKeyPhrases);
+      console.log(matched);
+
+      // TODO upload to database.
+      db.collection("users")
+        .doc(userId)
+        .collection("matches")
+        .doc("profiles")
+        .set({
+          users: matched
+        });
+    })
+    .catch(err => {
+      throw err;
+    });
+}
 
 exports.api = functions.https.onRequest(app);
