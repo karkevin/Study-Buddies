@@ -41,7 +41,7 @@ app.get("/test2", (req, res) => {
 
 // endpoint handling log in requests
 app.post("/login", (req, res) => {
-  const username = req.body.username;
+  const username = req.body.userid;
   const profile = db.collection("users").doc(username);
   profile.get().then(user => {
     if (user.exists) {
@@ -53,13 +53,31 @@ app.post("/login", (req, res) => {
       } else {
         res.json({
           userExists: true,
-          loginSuccessful: false
+          loginSuccessful: false,
+          userid: username
         });
       }
     } else {
       res.json({
         userExists: false,
-        loginSuccessful: false
+        loginSuccessful: false,
+        userid: username
+      });
+    }
+  });
+});
+
+app.post("/profileInfo", (req, res) => {
+  const profile = db.collection("users").doc(req.body.userid);
+  profile.get().then(user => {
+    if (!user.exists) {
+      res.send({});
+    } else {
+      res.send({
+        courses: user.data().courses,
+        bio: user.data().bio,
+        interests: user.data().interests,
+        picture: user.data().picture
       });
     }
   });
@@ -67,27 +85,35 @@ app.post("/login", (req, res) => {
 
 app.put("/editProfile", (req, res) => {
   const profile = db.collection("users").doc(req.body.userid);
-  profile
-    .get()
-    .then(user => {
-      user.update({
-        bio: req.body.bio,
-        courses: req.body.courses,
-        email: req.body.email,
-        interests: req.body.interests,
-        picture: req.body.picture
-      });
-    })
-    .then(result => {
-      res.send({
-        updated: true
-      });
-    })
-    .catch(result => {
+  profile.get().then(user => {
+    if (user.exists) {
+      let interestArray = req.body.interests.split(",");
+      for (let i = 0; i < interestArray.length; i++) {
+        interestArray[i] = interestArray[i].trim();
+      }
+      let coursesArray = req.body.courses.split(",");
+      for (let i = 0; i < coursesArray.length; i++) {
+        coursesArray[i] = coursesArray[i].trim();
+      }
+      profile
+        .set({
+          bio: req.body.bio,
+          courses: coursesArray,
+          email: req.body.email,
+          interests: interestArray,
+          picture: req.body.picture
+        })
+        .then(result => {
+          res.send({
+            updated: true
+          });
+        });
+    } else {
       res.send({
         updated: false
       });
-    });
+    }
+  });
 });
 
 app.get("/match", (req, res) => {});
@@ -95,6 +121,9 @@ app.get("/match", (req, res) => {});
 app.post("/addUser", (req, res) => {
   // does not add profile if userid exists already
   const users = db.collection("users");
+  //for (let i=0; i < users.length; i++){
+  //   users[i] = users[i].trim()
+  //}
   users
     .doc(req.body.userid)
     .get()
@@ -105,19 +134,37 @@ app.post("/addUser", (req, res) => {
           userCreated: false
         });
       } else {
+        let interestArray = req.body.interests.split(",");
+        for (let i = 0; i < interestArray.length; i++) {
+          interestArray[i] = interestArray[i].trim();
+        }
+        let coursesArray = req.body.courses.split(",");
+        for (let i = 0; i < coursesArray.length; i++) {
+          coursesArray[i] = coursesArray[i].trim();
+        }
+        users.doc(req.body.userid).set({
+          userid: req.body.userid,
+          name: req.body.name,
+          password: req.body.password,
+          bio: req.body.bio,
+          interests: interestArray,
+          courses: coursesArray,
+          email: req.body.email,
+          picture: req.body.picture
+        });
         users
+          .doc(req.body.userid)
+          .collection("matches")
           .add({
-            userid: req.body.userid,
-            name: req.body.name,
-            password: req.body.password,
-            bio: req.body.bio,
-            interests: req.body.interests,
-            courses: req.body.courses,
-            email: req.body.email,
-            picture: req.body.picture
+            profile: db.doc("users/" + req.body.userid)
           })
           .then(result => {
-            res.send("result");
+            res.send(result => {
+              res.send({
+                idTaken: false,
+                userCreated: true
+              });
+            });
           });
       }
     });
