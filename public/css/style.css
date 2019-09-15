@@ -9,9 +9,6 @@ body {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
   background-color: #c8f2ff;
-  -webkit-transition: all 0.7s ease;
-  transition: all 0.7s ease;
-  height: 3000px;
 }
 
 .flex {
@@ -35,10 +32,52 @@ body {
 }
 
 .profile {
+  display: -ms-grid;
+  display: grid;
   height: 18%;
   margin: 10%;
-  background-color: #FFF;
+  background-color: #fff;
   border-radius: 5%;
+  -ms-grid-rows: 30% 30% 30% 5%;
+      grid-template-rows: 30% 30% 30% 5%;
+  -ms-grid-row-align: center;
+      align-self: center;
+}
+
+.profile .personal {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.profile .personal img {
+  margin: 0 100%;
+  padding: 1%;
+  height: 100px;
+}
+
+.profile ul li {
+  margin-left: 1em;
+}
+
+.box {
+  -ms-grid-columns: [col1] 50% [col2] 50%;
+      grid-template-columns: [col1] 50% [col2] 50%;
+  -ms-grid-rows: [row1] 45% [row2] 55%;
+      grid-template-rows: [row1] 45% [row2] 55%;
+}
+
+.box .about-top {
+  grid-column: span 2;
+}
+
+.box p {
+  line-height: 1.5em;
 }
 
 footer {
