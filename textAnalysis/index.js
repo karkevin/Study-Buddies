@@ -33,17 +33,6 @@ function deleteFields() {
     delete userText.picture;
 } deleteFields();
 
-// input data
-let inputDocuments = {
-    documents: [
-        {
-            language: "en",
-            id: "1",
-            text: JSON.stringify(userText)
-        },
-    ]
-}
-
 var testData = {
     "Sleeping": ["Alice", "Bob", "Nicole"],
     "Debate": ["Joe", "Bob", "Cooper"],
@@ -54,9 +43,11 @@ var testData = {
 }
 
 
-function getMatchedKeywords(userText) {
+/**
+ * Gets the matched users from database based on keywords. 
+ */
+function getMatchedUsers(userText) {
     var userKeyPhrases = [];
-
     var inputDocuments = {
         documents: [
             {
@@ -75,13 +66,13 @@ function getMatchedKeywords(userText) {
             userKeyPhrases = result.documents[0].keyPhrases;
             var matched = keywords(userKeyPhrases);
             console.log(matched);
-            // upload to database.
+
+            // TODO upload to database.
         })
         .catch(err => {
             throw err;
         });
 }
-
 
 function keywords(phrases) {
     var matchedUsers = {};
@@ -119,4 +110,4 @@ function keywords(phrases) {
     return matchedList;
 }
 
-getMatchedKeywords(JSON.stringify(userText));
+getMatchedUsers(JSON.stringify(userText));
