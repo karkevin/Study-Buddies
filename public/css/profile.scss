@@ -13,6 +13,22 @@ body {
     height: 100vh;
 }
 
+footer {
+    background-color: #6c17de;
+    border-top: 2px solid black;
+    bottom: 0;
+    display: flex;
+    font-size: 14px;
+    justify-content: space-around;
+    padding: 1em;
+    position: fixed;
+    width: 100%;
+
+    i {
+        cursor: pointer;
+    }
+}
+
 .profile {
     align-items: center;
     border: 1px solid white;
@@ -29,8 +45,8 @@ body {
     margin-bottom: 30px;
 }
 
-.profile__name, .profile__interests, .profile__name {
-    width: 80%;
+.profile__name, .profile__interests, .profile__courses {
+    width: 90%;
     text-align: center;
 }
 

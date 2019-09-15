@@ -1,4 +1,4 @@
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   class User {
     /**
      * Creates a new User.
@@ -12,6 +12,10 @@ window.addEventListener('load', () => {
       this.name = name;
       this.interests = interests;
       this.courses = courses;
+    }
+
+    static fromJson(json) {
+      return new User(json['picture'], json['name'], json['interests'], json['courses']);
     }
   }
 
@@ -33,26 +37,59 @@ window.addEventListener('load', () => {
     profileCoursesElement.innerHTML = user.courses.join(", ");
   }
 
-  let user = new User(
-    'Resources/Bob.jpg',
-    'Bob Ding',
-    ['Basketball', 'Climbing', 'Sleeping', 'Coding', 'Hiking'],
-    ['CSC207', 'CSC209', 'CSC236', 'HPS101']
-  );
+  let user;
+  window.sessionStorage.setItem('userid', 'jess123');
+  try {
+    const response = await fetch(
+      'https://us-central1-studywithme.cloudfunctions.net/api/profileInfo',
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "userid": window.sessionStorage.getItem('userid') })
+      }
+    );
+    const json = await response.json();
+    user = User.fromJson(json);
+  } catch {
+    user = User.fromJson({
+      "picture": "Resources/Bob.jpg",
+      "name": "Bob Ding",
+      "interests": ["Basketball", "Climbing", "Sleeping", "Coding", "Hiking"],
+      "courses": ["CSC207", "CSC209", "CSC236", "HPS101"]
+    });
+  }
   displayUser(user);
 
   /**
    * Saves the user's information.
    */
-  function onSave() {
-    user = new User(
-      user.picture,
-      document.getElementById('profile-name').innerHTML,
-      document.getElementById('profile-interests').innerHTML,
-      document.getElementById('profile-courses').innerHTML
+  async function onSave() {
+    const userJson = {
+      "userid": window.sessionStorage.getItem('userid'),
+      "picture": user.picture,
+      "name": document.getElementById('profile-name').innerHTML,
+      "interests": document.getElementById('profile-interests').innerHTML,
+      "courses": document.getElementById('profile-courses').innerHTML
+    };
+    await fetch(
+      'https://us-central1-studywithme.cloudfunctions.net/api/editProfile',
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userJson)
+      }
     );
-    console.log(user);
   }
 
   document.getElementById('save-button').addEventListener('click', onSave);
+  document.getElementById('home-button').addEventListener('click', () => {
+    window.location.href = window.location.origin;
+  });
+  document.getElementById('profile-button').addEventListener('click', () => {
+    window.location.href = window.location.origin + '/profile.html';
+  });
 });

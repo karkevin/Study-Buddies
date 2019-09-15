@@ -1,4 +1,4 @@
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   class User {
     /**
      * Creates a new User.
@@ -28,23 +28,46 @@ window.addEventListener('load', () => {
     }
   }
 
-  const users = [
-    {
-      "picture": "Resources/Sherry.jpeg",
-      "name": "Sherry Sanders",
-      "interests": ["Painting", "Ballet", "Environmental Sciences", "Design", "Ski"],
-      "courses": ["ECO101", "ECO102", "CSC108", "ANT199"]
-    },
-    {
-      "picture": "Resources/Bob.jpg",
-      "name": "Bob Ding",
-      "interests": ["Basketball", "Climbing", "Sleeping", "Coding", "Hiking"],
-      "courses": ["CSC207", "CSC209", "CSC236", "HPS101"]
-    }
-  ].map(User.fromJson);
+  let users;
+  try {
+    const response = await fetch(
+      'https://us-central1-studywithme.cloudfunctions.net/api/matches',
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "userid": window.sessionStorage.getItem('userid') })
+      }
+    );
+    const json = await response.json();
+    users = json.map(User.fromJson);
+  } catch {
+    users = [
+      {
+        "picture": "Resources/Sherry.jpeg",
+        "name": "Sherry Sanders",
+        "interests": ["Painting", "Ballet", "Environmental Sciences", "Design", "Ski"],
+        "courses": ["ECO101", "ECO102", "CSC108", "ANT199"]
+      },
+      {
+        "picture": "Resources/Bob.jpg",
+        "name": "Bob Ding",
+        "interests": ["Basketball", "Climbing", "Sleeping", "Coding", "Hiking"],
+        "courses": ["CSC207", "CSC209", "CSC236", "HPS101"]
+      }
+    ].map(User.fromJson);
+  }
 
   const usersElement = document.getElementById('users');
   for (const user of users) {
     usersElement.innerHTML += user.toHtml();
   }
+
+  document.getElementById('home-button').addEventListener('click', () => {
+    window.location.href = window.location.origin;
+  });
+  document.getElementById('profile-button').addEventListener('click', () => {
+    window.location.href = window.location.origin + '/profile.html';
+  });
 });
