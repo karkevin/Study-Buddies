@@ -4,14 +4,12 @@ window.addEventListener('load', async () => {
         'https://us-central1-studywithme.cloudfunctions.net/api/login',
         {
             method: 'post',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(credentials)
         }
     );
-    console.log(response);
     const json = await response.json();
     console.log(json);
 });
