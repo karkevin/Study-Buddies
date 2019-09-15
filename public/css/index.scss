@@ -23,6 +23,10 @@ footer {
     padding: 1em;
     position: fixed;
     width: 100%;
+
+    i {
+        cursor: pointer;
+    }
 }
 
 .profile {

@@ -47,4 +47,11 @@ window.addEventListener('load', () => {
   for (const user of users) {
     usersElement.innerHTML += user.toHtml();
   }
+
+  document.getElementById('home-button').addEventListener('click', () => {
+    window.location.href = window.location.origin;
+  });
+  document.getElementById('profile-button').addEventListener('click', () => {
+    window.location.href = window.location.origin + '/profile.html';
+  });
 });

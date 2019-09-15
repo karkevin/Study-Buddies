@@ -55,4 +55,10 @@ window.addEventListener('load', () => {
   }
 
   document.getElementById('save-button').addEventListener('click', onSave);
+  document.getElementById('home-button').addEventListener('click', () => {
+    window.location.href = window.location.origin;
+  });
+  document.getElementById('profile-button').addEventListener('click', () => {
+    window.location.href = window.location.origin + '/profile.html';
+  });
 });
