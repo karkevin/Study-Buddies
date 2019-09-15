@@ -87,7 +87,7 @@ window.addEventListener('load', async () => {
 
   document.getElementById('save-button').addEventListener('click', onSave);
   document.getElementById('home-button').addEventListener('click', () => {
-    window.location.href = window.location.origin;
+    window.location.href = window.location.origin + '/home.html';
   });
   document.getElementById('profile-button').addEventListener('click', () => {
     window.location.href = window.location.origin + '/profile.html';
