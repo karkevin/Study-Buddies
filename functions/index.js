@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const app = express();
 
 // authoirze with firebase
@@ -15,6 +16,13 @@ admin.initializeApp({
 // initialize firestore database
 const db = admin.firestore();
 
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+app.use(bodyParser.json());
+
 app.get("/test", (req, res) => {
   console.log("testing api");
   db.collection("users").add({
@@ -26,26 +34,48 @@ app.get("/test", (req, res) => {
   });
 });
 
+app.get("/test2", (req, res) => {
+  res.send("hello");
+});
+
 // endpoint handling log in requests
 app.post("/login", (req, res) => {
-  const username = req.username;
+  const username = req.body.username;
   const profile = db.collection("users").doc(username);
   profile.get().then(user => {
     if (user.exists) {
-      if (user.data().password == req.password) {
+      if (user.data().password == req.body.password) {
         res.send({
-          message: "Signed in"
+          userExists: true,
+          loginSuccessful: true
         });
       } else {
-        res.send({
-          message: "Incorrect password"
+        res.json({
+          userExists: true,
+          loginSuccessful: false
         });
       }
     } else {
-      res.send({
-        message: "This user does not exist"
+      res.json({
+        userExists: false,
+        loginSuccessful: false
       });
     }
+  });
+});
+
+app.put("/editProfile", (req, res) => {
+  const profile = db.collection("users").doc(req.body.userid);
+  profile.get.then(user => {
+    user.array.forEach(element => {
+      user.update({
+        bio: req.body.bio,
+        courses: req.body.courses,
+        email: req.body.email,
+        interests: req.body.interests,
+        picture: req.body.picture
+      });
+    });
   });
 });
 
