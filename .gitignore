@@ -21,3 +21,5 @@ tmp/
 secrets/
 study-buddy/package.json
 study-buddy/src/api/index.js
+.firebase/hosting.cHVibGlj.cache
+*.cache

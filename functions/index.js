@@ -1,22 +1,21 @@
-//import "firebase/firestore";
-
+// import dependencies
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-//const firebase = require("firebase/firestore");
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
+// authoirze with firebase
 admin.initializeApp({
   apiKey: "AIzaSyBfIJepO-QXe8-M_fKFObdFxlHCclggmjE",
   authDomain: "studywithme-a94ce.firebaseapp.com",
   projectId: "studywithme"
 });
 
+// initialize firestore database
 const db = admin.firestore();
 
-//app.get("/test", (req, res) => {
-exports.test = functions.https.onRequest((req, res) => {
+app.get("/test", (req, res) => {
   console.log("testing api");
   db.collection("users").add({
     "full name": "Bill",
@@ -27,7 +26,28 @@ exports.test = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.login = functions.https.onRequest();
+// endpoint handling log in requests
+app.post("/login", (req, res) => {
+  const username = req.username;
+  const profile = db.collection("users").doc(username);
+  profile.get().then(user => {
+    if (user.exists) {
+      if (user.data().password == req.password) {
+        res.send({
+          message: "Signed in"
+        });
+      } else {
+        res.send({
+          message: "Incorrect password"
+        });
+      }
+    } else {
+      res.send({
+        message: "This user does not exist"
+      });
+    }
+  });
+});
 
 // });
 // // Create and Deploy Your First Cloud Functions
@@ -37,4 +57,4 @@ exports.login = functions.https.onRequest();
 //  response.send("Hello from Firebase!");
 // });
 
-//exports.api = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(app);
