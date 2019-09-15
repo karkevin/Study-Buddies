@@ -22,6 +22,7 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/test", (req, res) => {
   console.log("testing api");
