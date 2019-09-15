@@ -13,6 +13,18 @@ body {
     height: 100vh;
 }
 
+footer {
+    background-color: #6c17de;
+    border-top: 2px solid black;
+    bottom: 0;
+    display: flex;
+    font-size: 14px;
+    justify-content: space-around;
+    padding: 1em;
+    position: fixed;
+    width: 100%;
+}
+
 .profile {
     align-items: center;
     border: 1px solid white;
@@ -21,6 +33,10 @@ body {
     flex-direction: column;
     margin: 20px;
     padding-top: 40px;
+}
+
+.profile:last-child {
+    margin-bottom: 80px;
 }
 
 .profile__picture {
