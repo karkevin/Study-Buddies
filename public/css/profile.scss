@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(#873deb, #b096fe, #873deb);
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    height: 100vh;
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+}
+
+.profile__picture {
+    border-radius: 50%;
+    border: 5px solid white;
+    margin-bottom: 30px;
+}
+
+.profile__name, .profile__interests, .profile__name {
+    width: 80%;
+}
+
+.save__button--bordered {
+    background: none;
+    border: 3px solid white;
+    color: white;
+    cursor: pointer;
+    margin-top: 30px;
+    padding: 10px 5px;
+    width: 50%;
+}

@@ -7,7 +7,7 @@
 body {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
-  background-color: #c8f2ff;
+  background: linear-gradient(#873deb, #b096fe, #873deb);
 }
 
 .flex {
@@ -67,6 +67,6 @@ footer {
   justify-content: space-around;
   width: 100%;
   padding: 1em;
-  background-color: #75b0c2;
-  border-radius: 5% 5% 0 0;
+  background-color: #6c17de;
+  border-top: 2px solid black;
 }
