@@ -5,25 +5,45 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
+const https = require("https");
 
-// Import dependencies for Azure
-const CognitiveServicesCredentials = require("@azure/ms-rest-js");
-const TextAnalyticsAPIClient = require("@azure/cognitiveservices-textanalytics");
-// const key_var = 'TEXT_ANALYTICS_SUBSCRIPTION_KEY';
-// if (!process.env[key_var]) {
-//     throw new Error('please set/export the following environment variable: ' + key_var);
-// }
+let path = "/text/analytics/v2.1/keyPhrases";
+
+let response_handler = function(response) {
+  let body = "";
+  response.on("data", function(d) {
+    body += d;
+  });
+  response.on("end", function() {
+    let body_ = JSON.parse(body);
+    let body__ = JSON.stringify(body_, null, "  ");
+    console.log(body__);
+    console.log(body_);
+  });
+  response.on("error", function(e) {
+    console.log("Error: " + e.message);
+  });
+};
+
+let get_key_phrases = function(documents) {
+  let body = JSON.stringify(documents);
+
+  let request_params = {
+    method: "POST",
+    hostname: new URL(endpoint).hostname,
+    path: path,
+    headers: {
+      "Ocp-Apim-Subscription-Key": subscription_key
+    }
+  };
+
+  let req = https.request(request_params, response_handler);
+  req.write(body);
+  req.end();
+};
+
 const subscription_key = "bb76c73bafe3405484cd01c6af0ee732";
-
-// const endpoint_var = 'TEXT_ANALYTICS_ENDPOINT';
-// if (!process.env[endpoint_var]) {
-//     throw new Error('please set/export the following environment variable: ' + endpoint_var);
-// }
 const endpoint = "https://karkackev.cognitiveservices.azure.com/";
-const creds = new CognitiveServicesCredentials.ApiKeyCredentials({
-  inHeader: { "Ocp-Apim-Subscription-Key": subscription_key }
-});
-const client = new TextAnalyticsAPIClient.TextAnalyticsClient(creds, endpoint);
 
 // authoirze with firebase
 admin.initializeApp({
@@ -257,7 +277,7 @@ function keywords(phrases) {
     }
   }
 
-  for (var user in matchedUsers) {
+  for (let user of matchedUsers) {
     if (matchedList.length == 0) {
       matchedList.push(user);
     } else {
@@ -287,6 +307,7 @@ function getMatchedUsers(userText, userId) {
       }
     ]
   };
+  get_key_phrases(inputDocuments);
   var condition = client.keyPhrases({
     multiLanguageBatchInput: inputDocuments
   });

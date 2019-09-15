@@ -1,12 +1,13 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
-
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 body {
+  background: -webkit-gradient(linear, left top, left bottom, from(#873deb), color-stop(#b096fe), to(#873deb));
   background: linear-gradient(#873deb, #b096fe, #873deb);
   color: white;
   font-family: "Montserrat", sans-serif;
@@ -17,24 +18,34 @@ footer {
   background-color: #6c17de;
   border-top: 2px solid black;
   bottom: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   font-size: 14px;
-  justify-content: space-around;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
   padding: 1em;
   position: fixed;
   width: 100%;
+}
 
-  i {
-    cursor: pointer;
-  }
+footer i {
+  cursor: pointer;
 }
 
 .profile {
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border: 1px solid white;
   border-radius: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   margin: 20px;
   padding-top: 40px;
 }
@@ -69,3 +80,4 @@ footer {
   padding: 10px 5px;
   width: 50%;
 }
+/*# sourceMappingURL=index.css.map */
